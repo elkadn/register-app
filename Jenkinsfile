@@ -58,7 +58,7 @@ pipeline {
                 }
             }
         }
-        stage('Build & Push Docker Image') {
+        stage("Build & Push Docker Image") {
             steps {
                 script {
                     docker.withRegistry('',DOCKER_PASS) {
@@ -66,11 +66,12 @@ pipeline {
                     }
 
                     docker.withRegistry('',DOCKER_PASS) {
-                        docker_image = docker.push("${IMAGE_TAG}")
-                        docker_image = docker.push('latest')
+                        docker_image.push("${IMAGE_TAG}")
+                        docker_image.push('latest')
                     }
                 }
             }
-        }
+
+       }
     }
 }
