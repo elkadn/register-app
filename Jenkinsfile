@@ -1,12 +1,13 @@
 pipeline {
     agent { label "jenkinsAgent" }
+
     tools {
         jdk 'Java17'
         maven 'Maven3'
     }
 
-
     stages {
+
         stage("Cleanup Workspace") {
             steps {
                 cleanWs()
@@ -25,6 +26,11 @@ pipeline {
             }
         }
 
-        
+        stage("Application Test") {
+            steps {
+                sh "mvn test"
+            }
+        }
+
     }
 }
