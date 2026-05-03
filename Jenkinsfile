@@ -1,10 +1,10 @@
 pipeline {
     agent { label "jenkinsAgent" }
-
-    environment {
-        APP_NAME = "register-app-pipeline"
-        IMAGE_TAG = "latest"
+    tools {
+        jdk = "Java17"
+        maven = "Maven3"
     }
+
 
     stages {
         stage("Cleanup Workspace") {
@@ -19,26 +19,12 @@ pipeline {
             }
         }
 
-        stage("Update the Deployment Tags") {
+        stage("Build Application") {
             steps {
-                sh """
-                   sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
-                """
+                sh "mvn clean package"
             }
         }
 
-        stage("Push the changed deployment file to Git") {
-            steps {
-                sh """
-                   git config --global user.name "Adnane"
-                   git config --global user.email "tonemail@example.com"
-                   git add deployment.yaml
-                   git commit -m "Updated Deployment Manifest" || echo "No changes"
-                """
-                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                    sh "git push https://github.com/elkadn/register-app.git main"
-                }
-            }
-        }
+        
     }
 }
